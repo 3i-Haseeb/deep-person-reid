@@ -5,10 +5,10 @@ from PIL import Image
 import onnx
 import onnxruntime as ort
 
-onnx_model = onnx.load("./osnet_ain_x1_0.onnx")
+onnx_model = onnx.load("./model.onnx")
 onnx.checker.check_model(onnx_model)
 
-ort_sess = ort.InferenceSession("./osnet_ain_x1_0.onnx")
+ort_sess = ort.InferenceSession("./model.onnx")
 
 image = Image.open("../../test-images/1.jpeg").convert("RGB")
 

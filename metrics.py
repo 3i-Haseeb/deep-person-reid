@@ -3,6 +3,8 @@ from numpy.linalg import norm
 
 from torchreid.utils import FeatureExtractor
 
+from scipy.spatial import distance
+
 # Define distance metrics
 
 
@@ -21,10 +23,35 @@ def cosine_similarity(arr1, arr2):
     return dist
 
 
+def pearson_distance(arr1, arr2):
+    dist = np.corrcoef(arr1, arr2)
+    return dist[0][1]
+
+
+def hamming_distance(arr1, arr2):
+    dist = distance.hamming(arr1, arr2)
+    return dist
+
+
+def minkowski_distance(arr1, arr2, p=2):
+    dist = distance.minkowski(arr1, arr2)
+    return dist
+
+
+def chebyshev_distance(arr1, arr2):
+    dist = distance.chebyshev(arr1, arr2)
+    return dist
+
+
+def correlation(arr1, arr2):
+    dist = distance.correlation(arr1, arr2)
+    return dist
+
+
 if __name__ == "__main__":
     extractor = FeatureExtractor(
-        model_name="osnet_ain_x1_0",
-        model_path="./models/osnet_ain_x1_0_imagenet.pth",
+        model_name="osnet_x0_25",
+        model_path="./models/osnet_x0_25_msmt17_combineall_256x128.pth",
         device="cpu",
     )
 
@@ -44,5 +71,5 @@ if __name__ == "__main__":
     # print(f"Same person: {dist_same}")
 
     for i in range(0, 6):
-        dist_diff = cosine_similarity(features[0], features[i])
+        dist_diff = distance.yule(features[2], features[i])
         print(f"Distance: {dist_diff}")
