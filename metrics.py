@@ -71,5 +71,5 @@ if __name__ == "__main__":
     # print(f"Same person: {dist_same}")
 
     for i in range(0, 6):
-        dist_diff = distance.yule(features[2], features[i])
+        dist_diff = pearson_distance(features[2], features[i])
         print(f"Distance: {dist_diff}")

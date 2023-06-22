@@ -9,9 +9,7 @@ torchreid.models.show_avai_models()
 
 model = torchreid.models.build_model(name="osnet_x0_25", num_classes=1000)
 
-torchreid.utils.load_pretrained_weights(
-    model, "./osnet_x0_25_msmt17_combineall_256x128.pth"
-)
+torchreid.utils.load_pretrained_weights(model, "./model.pth.tar")
 
 
 input_name = ["input"]
