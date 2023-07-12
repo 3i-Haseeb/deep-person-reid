@@ -4,8 +4,8 @@ from torchreid.utils import FeatureExtractor
 
 if __name__ == "__main__":
     extractor = FeatureExtractor(
-        model_name="osnet_x1_0",
-        model_path="./osnet_ms_d_m.pth.tar",
+        model_name="osnet_x0_25",
+        model_path="./model.pth.tar",
         device="cpu",
     )
 

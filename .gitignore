@@ -1,6 +1,7 @@
 *.pt
 *.pth
 *.pth.tar
+*.onnx
 
 .idea/
 # Byte-compiled / optimized / DLL files
