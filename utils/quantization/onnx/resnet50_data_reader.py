@@ -61,7 +61,7 @@ class ResNet50DataReader(CalibrationDataReader):
 
         # Convert image to input data
         self.nhwc_data_list = _preprocess_images(
-            calibration_image_folder, preprocess_fn=preprocess, size_limit=0
+            calibration_image_folder, size_limit=0
         )
         self.input_name = session.get_inputs()[0].name
         self.datasize = len(self.nhwc_data_list)

@@ -16,7 +16,7 @@ def cosine_similarity(arr1, arr2):
 
 
 model_orig_path = "../weights/model.pth.tar"
-model_quant_path = "../weights/model_quant.pth.tar"
+model_quant_path = "../weights/model.pth"
 test_dir = "./test_images/person"
 image_list = os.listdir(test_dir)
 
@@ -40,8 +40,15 @@ torchreid.utils.load_pretrained_weights(model_orig, model_orig_path)
 model_orig.eval()
 
 # For quantized model
+# model_quant = torchreid.models.build_model(
+#     name="osnet_x0_25",
+#     num_classes=1,
+#     loss="softmax",
+#     pretrained=False,
+# )
+# torchreid.utils.load_pretrained_weights(model_quant, model_quant_path)
 model_quant = torch.load(model_quant_path, map_location="cpu")
-model_quant.eval()
+# model_quant.eval()
 
 models = [model_orig, model_quant]
 

@@ -1,18 +1,17 @@
+import onnx
 import torch
 from torch.autograd import Variable
 
 import torchreid
 
-import onnx
-
 # torchreid.models.show_avai_models()
 
-# model = torchreid.models.build_model(
-#     name="osnet_x0_25", num_classes=1, pretrained=False
-# )
+model = torchreid.models.build_model(
+    name="osnet_x0_25", num_classes=1, pretrained=False
+)
 
-# torchreid.utils.load_pretrained_weights(model, "./model_quant.pth.tar")
-model = torch.load("./model_quant.pth.tar")
+torchreid.utils.load_pretrained_weights(model, "./model.pth.tar")
+# model = torch.load("./model_quant.pth.tar")
 
 input_name = ["input"]
 output_name = ["output"]
@@ -25,6 +24,7 @@ torch.onnx.export(
     output_names=output_name,
     verbose=True,
     export_params=True,
+    opset_version=13,
 )
 
 
