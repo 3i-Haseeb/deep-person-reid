@@ -1,4 +1,4 @@
 import onnx_tool
 
-modelpath = "../weights/model_quant.onnx"
+modelpath = "../weights/model.onnx"
 onnx_tool.model_profile(modelpath)

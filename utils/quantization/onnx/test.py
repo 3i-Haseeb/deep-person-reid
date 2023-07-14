@@ -62,4 +62,4 @@ for i, model in enumerate(models):
     print(f"Average inference time = {sum(time_list) / len(time_list)}")
 
 # print(res[0])
-print(cosine_similarity(res[1], res[7]))  # keep gap of 6
+print(cosine_similarity(res[2], res[7]))  # keep gap of 6
