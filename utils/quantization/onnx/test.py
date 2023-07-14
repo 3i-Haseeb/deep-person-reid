@@ -1,15 +1,17 @@
+import os
+import time
+
+import numpy as np
+import onnx
+import onnxruntime as ort
 import torch
 import torchvision.transforms as T
+from numpy.linalg import norm
 from PIL import Image
 
-import os
-import onnx
-import time
-import onnxruntime as ort
-
 # Define model names
-model = "model.onnx"
-model_quant = "model_quant.onnx"
+model = "/Users/3i-a1-2021-15/Developer/projects/pivo-tracking/similarity-metrics/deep-person-reid/utils/quantization/weights/model.onnx"
+model_quant = "/Users/3i-a1-2021-15/Developer/projects/pivo-tracking/similarity-metrics/deep-person-reid/utils/quantization/weights/model_quant.onnx"
 models = [model, model_quant]
 
 # Define config
@@ -22,11 +24,20 @@ transforms += [T.ToTensor()]
 transforms += [T.Normalize(mean=pixel_mean, std=pixel_std)]
 preprocess = T.Compose(transforms)
 
+res = []
+
+
+# Utility functions
+def cosine_similarity(arr1, arr2):
+    dist = np.dot(arr1, arr2) / (norm(arr1) * norm(arr2))
+    return dist
+
+
 # Load models
 for i, model in enumerate(models):
-    onnx_model = onnx.load(f"./{model}")
+    onnx_model = onnx.load(f"{model}")
     onnx.checker.check_model(model)
-    ort_sess = ort.InferenceSession(f"./{model}")
+    ort_sess = ort.InferenceSession(f"{model}")
 
     time_list = []
 
@@ -38,10 +49,17 @@ for i, model in enumerate(models):
         img = torch.unsqueeze(img, 0)
 
         start = time.perf_counter()
-        outputs = ort_sess.run(None, {"input": img.numpy()})
+        output = ort_sess.run(None, {"input": img.numpy()})
         end = time.perf_counter()
+
+        output = np.array(output).squeeze(axis=0).squeeze(axis=0)
+        res.append(output)
+        # break
 
         print(f"Inference time for image {path} = {end-start}")
         time_list.append(end - start)
 
     print(f"Average inference time = {sum(time_list) / len(time_list)}")
+
+# print(res[0])
+print(cosine_similarity(res[1], res[7]))  # keep gap of 6

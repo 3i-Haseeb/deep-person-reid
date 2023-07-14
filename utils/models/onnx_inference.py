@@ -1,20 +1,20 @@
+import time
+
+import onnx
+import onnxruntime as ort
 import torch
 import torchvision.transforms as T
 from PIL import Image
 
-import onnx
-import time
-import onnxruntime as ort
-
 model_name = "model.onnx"
 
-onnx_model = onnx.load(f"./{model_name}")
+onnx_model = onnx.load(f"../quantization/weights/{model_name}")
 onnx.checker.check_model(onnx_model)
 
-ort_sess = ort.InferenceSession(f"./{model_name}")
+ort_sess = ort.InferenceSession(f"../quantization/weights/{model_name}")
 
 image = Image.open(
-    "../quantization/test_images/0007_c2s3_070952_01.jpg"
+    "../quantization/onnx/test_images/0007_c2s3_070952_01.jpg"
 ).convert("RGB")
 
 pixel_mean = [0.485, 0.456, 0.406]

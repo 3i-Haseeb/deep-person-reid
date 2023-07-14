@@ -1,19 +1,32 @@
+"""
+Original code can be found at:
+https://github.com/microsoft/onnxruntime-inference-examples/blob/main/quantization/image_classification/cpu/resnet50_data_reader.py
+"""
+
 import os
 
 import numpy
 import onnxruntime
+import torchvision.transforms as T
 from onnxruntime.quantization import CalibrationDataReader
 from PIL import Image
 
+pixel_mean = [0.485, 0.456, 0.406]
+pixel_std = [0.229, 0.224, 0.225]
+transforms = []
+transforms += [T.Resize((256, 128))]
+transforms += [T.ToTensor()]
+transforms += [T.Normalize(mean=pixel_mean, std=pixel_std)]
+preprocess = T.Compose(transforms)
+
 
 def _preprocess_images(
-    images_folder: str, height: int, width: int, size_limit=0
+    images_folder: str,
+    size_limit=0,
 ):
     """
     Loads a batch of images and preprocess them
     parameter images_folder: path to folder storing images
-    parameter height: image height in pixels
-    parameter width: image width in pixels
     parameter size_limit: number of images to load. Default is 0 which means all images are picked.
     return: list of matrices characterizing multiple images
     """
@@ -26,13 +39,11 @@ def _preprocess_images(
 
     for image_name in batch_filenames:
         image_filepath = images_folder + "/" + image_name
-        pillow_img = Image.new("RGB", (width, height))
-        pillow_img.paste(Image.open(image_filepath).resize((width, height)))
-        input_data = numpy.float32(pillow_img) - numpy.array(
-            [123.68, 116.78, 103.94], dtype=numpy.float32
-        )
+        pillow_img = Image.open(image_filepath).convert("RGB")
+        input_data = preprocess(pillow_img)
+        input_data = input_data.numpy()
         nhwc_data = numpy.expand_dims(input_data, axis=0)
-        nchw_data = nhwc_data.transpose(0, 3, 1, 2)  # ONNX Runtime standard
+        nchw_data = nhwc_data.transpose(0, 1, 2, 3)  # ONNX Runtime standard
         unconcatenated_batch_data.append(nchw_data)
     batch_data = numpy.concatenate(
         numpy.expand_dims(unconcatenated_batch_data, axis=0), axis=0
@@ -50,7 +61,7 @@ class ResNet50DataReader(CalibrationDataReader):
 
         # Convert image to input data
         self.nhwc_data_list = _preprocess_images(
-            calibration_image_folder, height, width, size_limit=0
+            calibration_image_folder, preprocess_fn=preprocess, size_limit=0
         )
         self.input_name = session.get_inputs()[0].name
         self.datasize = len(self.nhwc_data_list)
