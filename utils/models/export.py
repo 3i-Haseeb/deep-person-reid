@@ -10,7 +10,7 @@ model = torchreid.models.build_model(
     name="osnet_x0_25", num_classes=1, pretrained=False
 )
 
-torchreid.utils.load_pretrained_weights(model, "./model.pth.tar")
+torchreid.utils.load_pretrained_weights(model, "./model_pruned.pth.tar")
 # model = torch.load("./model_quant.pth.tar")
 
 input_name = ["input"]

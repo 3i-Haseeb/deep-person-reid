@@ -11,7 +11,7 @@ from PIL import Image
 
 # Define model names
 model = "/Users/3i-a1-2021-15/Developer/projects/pivo-tracking/similarity-metrics/deep-person-reid/utils/quantization/weights/model.onnx"
-model_quant = "/Users/3i-a1-2021-15/Developer/projects/pivo-tracking/similarity-metrics/deep-person-reid/utils/quantization/weights/model_quant.onnx"
+model_quant = "/Users/3i-a1-2021-15/Developer/projects/pivo-tracking/similarity-metrics/deep-person-reid/utils/quantization/weights/model_pruned.onnx"
 models = [model, model_quant]
 
 # Define config
@@ -62,4 +62,4 @@ for i, model in enumerate(models):
     print(f"Average inference time = {sum(time_list) / len(time_list)}")
 
 # print(res[0])
-print(cosine_similarity(res[2], res[7]))  # keep gap of 6
+print(cosine_similarity(res[0], res[6]))  # keep gap of 6

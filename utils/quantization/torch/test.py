@@ -16,7 +16,7 @@ def cosine_similarity(arr1, arr2):
 
 
 model_orig_path = "../weights/model.pth.tar"
-model_quant_path = "../weights/model.pth"
+model_quant_path = "../weights/model_pruned.pth.tar"
 test_dir = "./test_images/person"
 image_list = os.listdir(test_dir)
 
@@ -40,15 +40,15 @@ torchreid.utils.load_pretrained_weights(model_orig, model_orig_path)
 model_orig.eval()
 
 # For quantized model
-# model_quant = torchreid.models.build_model(
-#     name="osnet_x0_25",
-#     num_classes=1,
-#     loss="softmax",
-#     pretrained=False,
-# )
-# torchreid.utils.load_pretrained_weights(model_quant, model_quant_path)
-model_quant = torch.load(model_quant_path, map_location="cpu")
-# model_quant.eval()
+model_quant = torchreid.models.build_model(
+    name="osnet_x0_25",
+    num_classes=1,
+    loss="softmax",
+    pretrained=False,
+)
+torchreid.utils.load_pretrained_weights(model_quant, model_quant_path)
+# model_quant = torch.load(model_quant_path, map_location="cpu")
+model_quant.eval()
 
 models = [model_orig, model_quant]
 
@@ -85,4 +85,4 @@ for model in models:
 
     print(f"Average inference time = {sum(time_list) / len(time_list)}")
 
-print(cosine_similarity(res[2], res[8]))  # keep gap of 6
+# print(cosine_similarity(res[2], res[8]))  # keep gap of 6
